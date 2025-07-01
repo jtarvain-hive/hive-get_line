@@ -2,12 +2,12 @@
 #include <fcntl.h>
 #include <stdio.h>
 
-int main(void)
+int main(int ac, char **av)
 {
     int fd;
     char *line;
-    
-    fd = open("bible.txt", O_RDONLY);
+    (void)ac;
+    fd = open(av[1], O_RDONLY);
     if (fd == -1)
     {
         perror("Error opening file");

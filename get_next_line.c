@@ -6,7 +6,7 @@
 /*   By: jtarvain <jtarvain@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 18:26:42 by jtarvain          #+#    #+#             */
-/*   Updated: 2025/06/09 18:26:44 by jtarvain         ###   ########.fr       */
+/*   Updated: 2025/07/01 16:56:53 by jtarvain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*get_next_line(int fd)
 	ssize_t		bytes_read;
 
 	stash = NULL;
-	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || fd > _POSIX_OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!find_line(fd, buffer, &stash, &bytes_read))
 	{
@@ -41,7 +41,7 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int		find_line(int fd, char *buffer, char **stash, ssize_t *bytes_read)
+int	find_line(int fd, char *buffer, char **stash, ssize_t *bytes_read)
 {
 	*bytes_read = 1;
 	if (buffer[0] && found_line(buffer))
@@ -60,8 +60,6 @@ int		find_line(int fd, char *buffer, char **stash, ssize_t *bytes_read)
 		*bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (*bytes_read == -1)
 			return (0);
-		if (*bytes_read == 0)
-			return (1);
 		buffer[*bytes_read] = '\0';
 	}
 	return (1);
@@ -87,7 +85,7 @@ char	*strjoin_free(char *stash, const char *buffer)
 	return (str);
 }
 
-int		extract_line(char **line, char **stash, const char *buffer)
+int	extract_line(char **line, char **stash, const char *buffer)
 {
 	size_t	newline;
 	char	*sub;
@@ -110,7 +108,7 @@ int		extract_line(char **line, char **stash, const char *buffer)
 	return (1);
 }
 
-size_t		found_line(const char *s)
+size_t	found_line(const char *s)
 {
 	size_t	i;
 
