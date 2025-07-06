@@ -23,7 +23,7 @@
 
 char	*get_next_line(int fd);
 int		find_line(int fd, char *buffer, char **stash, ssize_t *bytes_read);
-char	*strjoin_free(char *stash, const char *buffer);
+char	*strjoin_free(char **stash, const char *buffer);
 int		extract_line(char **line, char **stash, const char *buffer);
 size_t	found_line(const char *s);
 void	*ft_memcpy(void *dest, const void *src, size_t n);

@@ -52,7 +52,7 @@ int	find_line(int fd, char *buffer, char **stash, ssize_t *bytes_read)
 			return (1);
 		if (buffer[0])
 		{
-			*stash = strjoin_free(*stash, buffer);
+			*stash = strjoin_free(stash, buffer);
 			if (!*stash)
 				return (0);
 			buffer[0] = '\0';
@@ -65,22 +65,24 @@ int	find_line(int fd, char *buffer, char **stash, ssize_t *bytes_read)
 	return (1);
 }
 
-char	*strjoin_free(char *stash, const char *buffer)
+char	*strjoin_free(char **stash, const char *buffer)
 {
 	char	*str;
 
 	str = NULL;
-	if (!stash)
+	if (!*stash)
 		return (ft_strdup(buffer));
 	else
 	{
-		str = ft_strjoin(stash, buffer);
+		str = ft_strjoin(*stash, buffer);
 		if (!str)
 		{
-			free(stash);
+			free(*stash);
+			*stash = NULL;
 			return (NULL);
 		}
-		free(stash);
+		free(*stash);
+		*stash = NULL;
 	}
 	return (str);
 }
@@ -93,18 +95,16 @@ int	extract_line(char **line, char **stash, const char *buffer)
 	newline = found_line(buffer);
 	if (!newline)
 	{
-		*line = strjoin_free(*stash, buffer);
-		*stash = NULL;
+		*line = strjoin_free(stash, buffer);
 		return (1);
 	}
 	sub = ft_substr(buffer, 0, newline);
 	if (!sub)
 		return (free(*stash), 0);
-	*line = strjoin_free(*stash, sub);
+	*line = strjoin_free(stash, sub);
 	free(sub);
 	if (!*line)
 		return (0);
-	*stash = NULL;
 	return (1);
 }
 
